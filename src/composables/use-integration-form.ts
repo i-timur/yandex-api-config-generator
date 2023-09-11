@@ -1,12 +1,12 @@
 import useVuelidate from '@vuelidate/core';
-import { computed, reactive, ref } from 'vue';
+import { Ref, computed, reactive, ref } from 'vue';
 import { IntegrationEnum } from '../classes/integrations/integration-enum';
 import { getFields } from '../classes/integrations/fields/get-fields';
 import { helpers, required } from '@vuelidate/validators';
+import { Integration } from '../classes/integrations/generator-config';
 
-export function useIntegrationForm() {
+export function useIntegrationForm(integrations: Ref<Integration[]>) {
   const selectedIntegration = ref(IntegrationEnum.ServerlessContainer);
-  const integrations = ref<any[]>([]);
 
   const fields = computed(() => getFields(selectedIntegration.value));
 
@@ -59,6 +59,9 @@ export function useIntegrationForm() {
   const v$ = useVuelidate(rules, formData, { $rewardEarly: false });
 
   const addIntegration = (integration: any) => integrations.value.unshift(integration);
+  const deleteIntegration = (id: string) => {
+    integrations.value = integrations.value.filter(integration => integration.id !== id);
+  };
   const resetForm = () => {
     selectedIntegration.value = IntegrationEnum.ServerlessContainer;
     formData.integration.path = '/';
@@ -81,5 +84,6 @@ export function useIntegrationForm() {
     integrations,
     addIntegration,
     resetForm,
+    deleteIntegration,
   };
 }

@@ -6,8 +6,10 @@ import { merge } from 'lodash-es';
 import YAML from 'yaml';
 
 export interface Integration {
+  id: string;
   type: IntegrationEnum;
   path: string;
+  labels: string[];
   values: any[];
 }
 

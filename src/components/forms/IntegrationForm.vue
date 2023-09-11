@@ -46,9 +46,18 @@
       </button>
 
       <div v-if="integrations.length">
-        <h2 class="text-xl text-primary font-semibold mt-4">Добавленные интеграции:</h2>
+        <h2 class="text-xl font-semibold mt-4">Добавленные интеграции:</h2>
         <div v-for="integration in integrations" :key="integration.id" class="mt-4">
           <h6 class="text-base font-medium">{{ getIntegrationTitle(integration.type) }}</h6>
+
+          <label class="block mt-2 text-base">
+            URL для интеграции
+          </label>
+          <input
+            :value="integration.path"
+            :disabled="true"
+            class="w-full p-2 border rounded mt-2"
+          />
 
           <template v-for="(_, index) in integration.labels" :key="integration.id + integration.labels[index]">
             <label class="block mt-2 text-base">
@@ -59,7 +68,16 @@
               :disabled="true"
               class="w-full p-2 border rounded mt-2"
             />
+
           </template>
+
+          <button
+            type="button"
+            class="btn btn-error mt-2"
+            @click="deleteIntegration(integration.id); emit('update:modelValue', integrations)"
+          >
+            Удалить интеграцию
+          </button>
         </div>
       </div>
 
@@ -73,8 +91,10 @@ import { IntegrationEnum } from '../../classes/integrations/integration-enum';
 import { useIntegrationForm } from '../../composables/use-integration-form';
 import { v4 as uuidv4 } from 'uuid';
 import { getIntegrationTitle } from '../../utils/get-integration';
+import { toRef } from 'vue';
 
-const emit = defineEmits(['addIntegration']);
+const props = defineProps(['modelValue']);
+const emit = defineEmits(['update:modelValue']);;
 
 const {
   v$,
@@ -83,8 +103,9 @@ const {
   selectedIntegration,
   integrations,
   addIntegration,
-  resetForm, 
-} = useIntegrationForm();
+  resetForm,
+  deleteIntegration,
+} = useIntegrationForm(toRef(props.modelValue));
 
 const submitForm = async () => {
   const isValid = await v$.value.$validate();
@@ -110,7 +131,7 @@ const submitForm = async () => {
     });
     resetForm();
 
-    emit('addIntegration', integrations.value);
+    emit('update:modelValue', integrations.value);
   }
 };
 </script>

@@ -9,7 +9,7 @@
       <input v-model="name" class="w-full p-2 border rounded" />
     </div>
 
-    <IntegrationForm @add-integration="handleIntegrationAdd" />
+    <IntegrationForm v-model="integrations" />
 
     <button
       type="button"
@@ -39,9 +39,11 @@ const generatedConfig = ref<string>('');
 const integrations = ref<any[]>([]);
 const name = ref('');
 
-const handleIntegrationAdd = (ints: any[]) => integrations.value = ints;
-
 const handleGenerate = () => {
+  if (!integrations.value.length) {
+    return;
+  }
+
   generatedConfig.value = GeneratorConfig.generateConfig(name.value, integrations.value);
 };
 </script>
