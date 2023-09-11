@@ -26,8 +26,6 @@ const pathObject = {
   },
 };
 
-
-
 export const CloundFunctionsIntegrationConfig: IntegrationConfigBase = class {
   static type = IntegrationEnum.ServerlessContainer;
   static parameters = [

@@ -43,7 +43,14 @@
         </template>
       </div>
 
-      <button type="submit" class="btn btn-primary mt-4">
+      <button
+        type="button"
+        class="btn btn-secondary flex mt-2"
+      >
+        Добавить интеграцию
+      </button>
+
+      <button type="submit" class="btn btn-primary mt-4 block">
         Сгенерировать конфигурацию
       </button>
     </form>

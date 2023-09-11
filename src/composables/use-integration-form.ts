@@ -12,7 +12,7 @@ export function useIntegrationForm() {
     name: '',
     integration: {
       type: selectedIntegration,
-      path: '',
+      path: '/',
       params: {},
     },
   });
