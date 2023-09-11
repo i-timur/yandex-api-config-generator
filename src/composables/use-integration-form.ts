@@ -6,10 +6,11 @@ import { helpers, required } from '@vuelidate/validators';
 
 export function useIntegrationForm() {
   const selectedIntegration = ref(IntegrationEnum.ServerlessContainer);
+  const integrations = ref<any[]>([]);
+
   const fields = computed(() => getFields(selectedIntegration.value));
 
   const formData: Record<string, any> = reactive({
-    name: '',
     integration: {
       type: selectedIntegration,
       path: '/',
@@ -19,10 +20,10 @@ export function useIntegrationForm() {
 
   const rules = computed(() => {
     const localRules: Record<string, any> = {
-      name: {},
-      description: {},
       integration: {
-        type: {},
+        type: {
+          required: helpers.withMessage('Это обязательное поле', required),
+        },
         path: {
           required: helpers.withMessage('Это обязательное поле', required),
         },
@@ -57,10 +58,28 @@ export function useIntegrationForm() {
 
   const v$ = useVuelidate(rules, formData, { $rewardEarly: false });
 
+  const addIntegration = (integration: any) => integrations.value.unshift(integration);
+  const resetForm = () => {
+    selectedIntegration.value = IntegrationEnum.ServerlessContainer;
+    formData.integration.path = '/';
+    formData.integration.params = {};
+
+    const params: Record<string, any> = {};
+
+    for (const field of getFields(selectedIntegration.value)) {
+      params[field.fieldName] = '';
+    }
+
+    formData.integration.params = params;
+  };
+
   return {
     v$,
     formData,
     fields,
     selectedIntegration,
+    integrations,
+    addIntegration,
+    resetForm,
   };
 }

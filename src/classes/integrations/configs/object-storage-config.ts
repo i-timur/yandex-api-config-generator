@@ -3,7 +3,7 @@ import { IntegrationEnum } from '../integration-enum';
 import YAML from 'yaml';
 import { setObjectProperty } from '../../../utils/set-object-path';
 import { baseConfig } from '../../../utils/base-config';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 const indexPathObject = {
   get: {
@@ -86,6 +86,6 @@ export const ObjectStorageIntegrationConfig: IntegrationConfigBase = class {
 
     cache.value = {};
 
-    return YAML.stringify(config);
+    return config;
   }
 };

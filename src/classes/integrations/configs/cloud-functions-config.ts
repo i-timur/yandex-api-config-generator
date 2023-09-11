@@ -26,7 +26,7 @@ const pathObject = {
   },
 };
 
-export const CloundFunctionsIntegrationConfig: IntegrationConfigBase = class {
+export const CloudFunctionsIntegrationConfig: IntegrationConfigBase = class {
   static type = IntegrationEnum.ServerlessContainer;
   static parameters = [
     'paths./{url+}.get.x-yc-apigateway-integration.function_id',
@@ -53,6 +53,6 @@ export const CloundFunctionsIntegrationConfig: IntegrationConfigBase = class {
       setObjectProperty(config, paramPath, values[i]);
     }
 
-    return YAML.stringify(config);
+    return config;
   }
 };

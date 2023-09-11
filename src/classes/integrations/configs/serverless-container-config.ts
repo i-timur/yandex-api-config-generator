@@ -51,6 +51,6 @@ export const ServerlessContainerConfig: IntegrationConfigBase = class {
       setObjectProperty(config, paramPath, values[i]);
     }
 
-    return YAML.stringify(config);
+    return config;
   }
 };

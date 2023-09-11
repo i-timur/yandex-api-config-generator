@@ -2,11 +2,6 @@
   <div>
     <form @submit.prevent="submitForm">
       <div>
-        <label class="block font-medium">Название проекта</label>
-        <input v-model="formData.name" class="w-full p-2 border rounded" />
-      </div>
-
-      <div>
         <label class="block font-medium mt-2">Выберите интеграцию:</label>
         <select v-model="selectedIntegration" class="w-full p-2 border rounded">
           <option :value="IntegrationEnum.ServerlessContainer"> Serverless Container </option>
@@ -44,32 +39,78 @@
       </div>
 
       <button
-        type="button"
+        type="submit"
         class="btn btn-secondary flex mt-2"
       >
         Добавить интеграцию
       </button>
 
-      <button type="submit" class="btn btn-primary mt-4 block">
-        Сгенерировать конфигурацию
-      </button>
+      <div v-if="integrations.length">
+        <h2 class="text-xl text-primary font-semibold mt-4">Добавленные интеграции:</h2>
+        <div v-for="integration in integrations" :key="integration.id" class="mt-4">
+          <h6 class="text-base font-medium">{{ getIntegrationTitle(integration.type) }}</h6>
+
+          <template v-for="(_, index) in integration.labels" :key="integration.id + integration.labels[index]">
+            <label class="block mt-2 text-base">
+              {{ integration.labels[index] }}
+            </label>
+            <input
+              :value="integration.values[index]"
+              :disabled="true"
+              class="w-full p-2 border rounded mt-2"
+            />
+          </template>
+        </div>
+      </div>
+
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
+import { getFields } from '../../classes/integrations/fields/get-fields';
 import { IntegrationEnum } from '../../classes/integrations/integration-enum';
 import { useIntegrationForm } from '../../composables/use-integration-form';
+import { v4 as uuidv4 } from 'uuid';
+import { getIntegrationTitle } from '../../utils/get-integration';
 
-const emit = defineEmits(['submit']);
+const emit = defineEmits(['addIntegration']);
 
-const { v$, formData, fields, selectedIntegration } = useIntegrationForm();
+const {
+  v$,
+  formData,
+  fields,
+  selectedIntegration,
+  integrations,
+  addIntegration,
+  resetForm, 
+} = useIntegrationForm();
 
 const submitForm = async () => {
   const isValid = await v$.value.$validate();
 
   if (isValid) {
-    emit('submit', formData);
+    const labels = [];
+    const values = [];
+
+    const fields = getFields(selectedIntegration.value);
+
+    for (let i = 0; i < fields.length; i++) {
+      const field = fields[i];
+      labels.push(field.label);
+      values.push(formData.integration.params[field.fieldName]); 
+    }
+
+    addIntegration({
+      id: uuidv4(),
+      type: formData.integration.type,
+      path: formData.integration.path,
+      labels,
+      values,
+    });
+    resetForm();
+
+    emit('addIntegration', integrations.value);
   }
 };
 </script>

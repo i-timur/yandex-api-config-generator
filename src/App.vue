@@ -4,10 +4,23 @@
       Yandex API Gateway Configuration Generator
     </h1>
 
-    <IntegrationForm @submit="handleSubmit" />
+    <div>
+      <label class="block font-medium">Название проекта</label>
+      <input v-model="name" class="w-full p-2 border rounded" />
+    </div>
+
+    <IntegrationForm @add-integration="handleIntegrationAdd" />
+
+    <button
+      type="button"
+      class="btn btn-primary mt-4 block"
+      @click="handleGenerate"
+    >
+      Сгенерировать конфигурацию
+    </button>
 
     <div>
-      <label class="block font-medium mt-4">Результат генерации:</label>
+      <label class="block text-xl font-medium mt-4">Результат генерации:</label>
       <highlightjs
         v-if="generatedConfig"
         language="yaml"
@@ -20,36 +33,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import IntegrationForm from './components/forms/IntegrationForm.vue';
-import { CloundFunctionsIntegrationConfig } from './classes/integrations/configs/cloud-functions-config';
-import { IntegrationEnum } from './classes/integrations/integration-enum';
-import { ServerlessContainerConfig } from './classes/integrations/configs/serverless-container-config';
-import { ObjectStorageIntegrationConfig } from './classes/integrations/configs/object-storage-config';
+import { GeneratorConfig } from './classes/integrations/generator-config';
 
 const generatedConfig = ref<string>('');
+const integrations = ref<any[]>([]);
+const name = ref('');
 
-const handleSubmit = (form: any) => {
-  const params = Object.values(form.integration.params);
-  console.log('params: ', params)
+const handleIntegrationAdd = (ints: any[]) => integrations.value = ints;
 
-  if (form.integration.type === IntegrationEnum.ServerlessContainer) {
-    generatedConfig.value = ServerlessContainerConfig.generateConfig(
-      form.name,
-      form.integration.path,
-      params
-    );
-  } else if (form.integration.type === IntegrationEnum.ObjectStorage) {
-    generatedConfig.value = ObjectStorageIntegrationConfig.generateConfig(
-      form.name,
-      form.integration.path,
-      params
-    );
-  } else if (form.integration.type === IntegrationEnum.CloudFunctions) {
-    generatedConfig.value = CloundFunctionsIntegrationConfig.generateConfig(
-      form.name,
-      form.integration.path,
-      params
-    );
-  }
+const handleGenerate = () => {
+  generatedConfig.value = GeneratorConfig.generateConfig(name.value, integrations.value);
 };
 </script>
 
@@ -59,3 +52,4 @@ const handleSubmit = (form: any) => {
   margin: 0 auto;
 }
 </style>
+./classes/integrations/generator-config
