@@ -74,6 +74,7 @@ export function useIntegrationForm(integrations: Ref<Integration[]>) {
     }
 
     formData.integration.params = params;
+    v$.value.$reset();
   };
 
   return {
