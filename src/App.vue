@@ -9,11 +9,11 @@
       <input v-model="name" class="w-full p-2 border rounded" />
     </div>
 
-    <IntegrationForm v-model="integrations" />
+    <IntegrationForm class="mt-6" v-model="integrations" />
 
     <button
       type="button"
-      class="btn btn-primary mt-4 block"
+      class="btn btn-primary mt-10 block"
       @click="handleGenerate"
     >
       Сгенерировать конфигурацию

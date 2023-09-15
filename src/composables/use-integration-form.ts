@@ -59,9 +59,21 @@ export function useIntegrationForm(integrations: Ref<Integration[]>) {
   const v$ = useVuelidate(rules, formData, { $rewardEarly: false });
 
   const addIntegration = (integration: any) => integrations.value.unshift(integration);
+
   const deleteIntegration = (id: string) => {
     integrations.value = integrations.value.filter(integration => integration.id !== id);
   };
+
+  const editIntegration = (id: string, newIntegration: Integration) => {
+    integrations.value = integrations.value.map(integration => {
+      if (integration.id === id) {
+        return newIntegration;
+      }
+
+      return integration;
+    });
+  }
+
   const resetForm = () => {
     selectedIntegration.value = IntegrationEnum.ServerlessContainer;
     formData.integration.path = '/';
@@ -86,5 +98,6 @@ export function useIntegrationForm(integrations: Ref<Integration[]>) {
     addIntegration,
     resetForm,
     deleteIntegration,
+    editIntegration,
   };
 }
